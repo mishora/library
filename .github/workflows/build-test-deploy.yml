@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build_test:
 
     runs-on: ubuntu-latest
     steps:
@@ -30,3 +30,28 @@ jobs:
       run: npx playwright install
     - name: Start tests
       run: npm run test
+  deploy-backend:
+    needs: build_test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repo
+      uses: actions/checkout@v4
+    - name: Deploy backend
+      uses: JorgeLNJunior/render-deploy@v1.4.4
+      with:
+        service_id: ${{ secrets.MY_RENDER_SERVICE_ID_FE }}
+        api_key: ${{ secrets.RENDER_API_KEY }}
+
+  deploy-frontend:
+    needs: build_test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repo
+      uses: actions/checkout@v4
+    - name: Deploy backend
+      uses: JorgeLNJunior/render-deploy@v1.4.4
+      with:
+        service_id: ${{ secrets.MY_RENDER_SERVICE_ID_BE }}
+        api_key: ${{ secrets.RENDER_API_KEY }}
+
+
